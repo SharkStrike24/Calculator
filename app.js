@@ -45,7 +45,22 @@ function checkOperations(text){
 }
 
 function interpretOperations(text){
-	undefined	
+	lexedOp = text.split("_")
+	lexedOp[0] = parseInt(lexedOp[0])
+	lexedOp[2] = parseInt(lexedOp[2])
+	switch(lexedOp[1]){
+		case "+":
+			return lexedOp[0] + lexedOp[2]
+		case "-":
+			return lexedOp[0] - lexedOp[2]
+		case "*":
+			return lexedOp[0] * lexedOp[2]
+		case "/":
+			return lexedOp[0] / lexedOp[2]
+		default:
+			return undefined
+	}
+	text = ""
 }
 
 
@@ -87,7 +102,7 @@ function drawButtons(){
 	createButton("operation-button", "add", "+", buttonContainer, () => {
 		if(checkOperations(operation) === false){
 			operation += "+"
-			operationText = operation
+			operationText = operation.substring(0, operation.length - 1)
 			operationText += "_+_"
 		  textDisplay.innerHTML = operation
 		}	
@@ -96,7 +111,7 @@ function drawButtons(){
 	createButton("operation-button", "subtract", "-", buttonContainer, () => {
 		if(checkOperations(operation) === false){
 			operation += "-"
-			operationText = operation
+			operationText = operation.substring(0, operation.length - 1)
 			operationText += "_-_"
 		  textDisplay.innerHTML = operation
 		}	
@@ -105,7 +120,7 @@ function drawButtons(){
 	createButton("operation-button", "multiply", "*", buttonContainer, () => {
 		if(checkOperations(operation) === false){
 			operation += "*"
-			operationText = operation
+			operationText = operation.substring(0, operation.length - 1)
 			operationText += "_*_"
 		  textDisplay.innerHTML = operation
 		}	
@@ -114,16 +129,18 @@ function drawButtons(){
 	createButton("operation-button", "divide", "/", buttonContainer, () => {
 		if(checkOperations(operation) === false){
 			operation += "/"
-			operationText = operation
+			operationText = operation.substring(0, operation.length - 1)
 			operationText += "_/_"
 		  textDisplay.innerHTML = operation
 		}	
 	})
 
 	createButton("operation-button", "equals", "=", buttonContainer, () => {
-		operationText += operation.substring(operation.lastIndexOf("_"), operation.length - 1)
+		operationText += operation.substring(operationText.lastIndexOf("_") - 1)
+		console.log(operationText.lastIndexOf("_"))
 		console.log(operationText)
-		interpretOperations(operationText)
+		operation = ""
+		textDisplay.innerHTML = interpretOperations(operationText)
 	})
 
 }
