@@ -1,7 +1,3 @@
-.number-button:hover{
-	background-color: grey;
-}
-
 .number-button{
 	width: 50px;
 	height: 50px;
@@ -11,4 +7,14 @@
 	width: 200px;
 	display: flex;
 	flex-wrap: wrap;
+}
+
+.operation-button{
+	height: 50px;
+	width: 50px;
+	background-color: gray;
+}
+
+.operation-button:hover{
+	background-color: darkgrey;
 }

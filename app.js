@@ -16,21 +16,27 @@ function endOfString(text){
 }
 
 function checkOperationsEndOfString(text){
-	switch(text.length - 1){
-		case text.indexOf("+"):
-			return true
-		case text.indexOf("-"):
-			return true
-		case text.indexOf("*"):
-	  	return true
-		case text.indexOf("/"):
-			return true
-		default:
-			return false
+	text = text.toString()
+	if(text.length > 0){
+		switch(text.length - 1){
+			case text.indexOf("+"):
+				return true
+			case text.indexOf("-"):
+				return true
+			case text.indexOf("*"):
+	  		return true
+			case text.indexOf("/"):
+				return true
+			default:
+				return false
+		}
+	}else{
+		return false
 	}
 	
 }
 function checkOperations(text){
+	text = text.toString()
 	let total = 0
 	total += text.indexOf("+")
 	total += text.indexOf("-")
@@ -45,9 +51,11 @@ function checkOperations(text){
 }
 
 function interpretOperations(text){
+	text = text.toString()
 	lexedOp = text.split("_")
-	lexedOp[0] = parseInt(lexedOp[0])
-	lexedOp[2] = parseInt(lexedOp[2])
+	console.log(lexedOp)
+	lexedOp[0] = parseFloat(lexedOp[0])
+	lexedOp[2] = parseFloat(lexedOp[2])
 	switch(lexedOp[1]){
 		case "+":
 			return lexedOp[0] + lexedOp[2]
@@ -56,11 +64,13 @@ function interpretOperations(text){
 		case "*":
 			return lexedOp[0] * lexedOp[2]
 		case "/":
+			if(lexedOp[0] === 0 || lexedOp[2] === 0){
+				return 8008135
+			}
 			return lexedOp[0] / lexedOp[2]
 		default:
 			return undefined
 	}
-	text = ""
 }
 
 
@@ -72,18 +82,19 @@ function drawButtons(){
 	//0 button is in an unusual place due to the nature of this for loop
 	for(let i = 0; i < 10; i++){
 		createButton("number-button", i, i, buttonContainer, () => {
-			if(i === 0 && checkOperationsEndOfString(operation)){
+			console.log(i)
+			if(i === 0 && checkOperationsEndOfString(operation) === true){
 				operation += ""
 			}
 			else{
 				operation += i.toString()
 			}
 			if(checkOperations(operation) === false){
-				operation = parseInt(operation).toString()
+				operation = parseFloat(operation).toString()
 			}
 			
 			textDisplay.innerHTML = operation
-			console.log(operation)
+			console.log(operation + " " + operationText)
 		})
 	}
 	createButton("operation-button", "clear", "CE", buttonContainer, () => {
@@ -92,7 +103,9 @@ function drawButtons(){
 	})
 
 	createButton("operation-button", "delete", "del", buttonContainer, () => {
+		operation = operation.toString()
 		operation = operation.slice(0, operation.length - 1)
+		console.log(operation)
 		if (operation === ""){
 			operation = "0"	
 		}
@@ -100,49 +113,115 @@ function drawButtons(){
 	})
 
 	createButton("operation-button", "add", "+", buttonContainer, () => {
+		operationText = operationText.toString()
+		operation = operation.toString()
 		if(checkOperations(operation) === false){
 			operation += "+"
 			operationText = operation.substring(0, operation.length - 1)
 			operationText += "_+_"
 		  textDisplay.innerHTML = operation
 		}	
+		if(checkOperations(operation) === true && operation.substring(operationText.lastIndexOf("_") - 1).length != 0){
+			console.log(operationText)
+			operationText += operation.substring(operationText.lastIndexOf("_") - 1)
+			textDisplay.innerHTML = interpretOperations(operationText)
+			operation = interpretOperations(operationText)
+			operationText = interpretOperations(operationText)
+			operation += "+"
+			operationText = operation.substring(0, operation.length - 1)
+			operationText += "_+_"
+		  textDisplay.innerHTML = operation
+		}
 	})
 
 	createButton("operation-button", "subtract", "-", buttonContainer, () => {
+		operationText = operationText.toString()
+		operation = operation.toString()
 		if(checkOperations(operation) === false){
 			operation += "-"
 			operationText = operation.substring(0, operation.length - 1)
 			operationText += "_-_"
 		  textDisplay.innerHTML = operation
 		}	
+		if(checkOperations(operation) === true && operation.substring(operationText.lastIndexOf("_") - 1).length != 0){
+			console.log(operationText)
+			operationText += operation.substring(operationText.lastIndexOf("_") - 1)
+			textDisplay.innerHTML = interpretOperations(operationText)
+			operation = interpretOperations(operationText)
+			operationText = interpretOperations(operationText)
+			operation += "-"
+			operationText = operation.substring(0, operation.length - 1)
+			operationText += "_-_"
+		  textDisplay.innerHTML = operation
+		}
 	})
 	
 	createButton("operation-button", "multiply", "*", buttonContainer, () => {
+		operationText = operationText.toString()
+		operation = operation.toString()
 		if(checkOperations(operation) === false){
 			operation += "*"
 			operationText = operation.substring(0, operation.length - 1)
 			operationText += "_*_"
 		  textDisplay.innerHTML = operation
 		}	
+		if(checkOperations(operation) === true && operation.substring(operationText.lastIndexOf("_") - 1).length != 0){
+			console.log(operationText)
+			operationText += operation.substring(operationText.lastIndexOf("_") - 1)
+			textDisplay.innerHTML = interpretOperations(operationText)
+			operation = interpretOperations(operationText)
+			operationText = interpretOperations(operationText)
+			operation += "*"
+			operationText = operation.substring(0, operation.length - 1)
+			operationText += "_*_"
+		  textDisplay.innerHTML = operation
+		}
 	})
 
 	createButton("operation-button", "divide", "/", buttonContainer, () => {
+		operationText = operationText.toString()
+		operation = operation.toString()
 		if(checkOperations(operation) === false){
 			operation += "/"
 			operationText = operation.substring(0, operation.length - 1)
 			operationText += "_/_"
 		  textDisplay.innerHTML = operation
+		}
+		console.log(operation.substring(operationText.lastIndexOf("_") - 1))
+		if(checkOperations(operation) === true && operation.substring(operationText.lastIndexOf("_") - 1).length != 0){
+			console.log(operationText)
+			operationText += operation.substring(operationText.lastIndexOf("_") - 1)
+			textDisplay.innerHTML = interpretOperations(operationText)
+			operation = interpretOperations(operationText)
+			operationText = interpretOperations(operationText)
+			operation += "/"
+			operationText = operation.substring(0, operation.length - 1)
+			operationText += "_/_"
+		  textDisplay.innerHTML = operation
+		}
+	})
+
+	createButton("operation-button", "decimal", ".", buttonContainer, () => {
+		operationText = operationText.toString()
+		operation = operation.toString()
+		decimalCheck = operation.substring(operationText.lastIndexOf("_") - 1)
+		if(decimalCheck.indexOf(".") === -1){
+			operation += "." 
+		  textDisplay.innerHTML = operation
 		}	
 	})
 
 	createButton("operation-button", "equals", "=", buttonContainer, () => {
-		operationText += operation.substring(operationText.lastIndexOf("_") - 1)
-		console.log(operationText.lastIndexOf("_"))
-		console.log(operationText)
-		operation = ""
-		textDisplay.innerHTML = interpretOperations(operationText)
+		if(checkOperations(operation) === true && operation.substring(operationText.lastIndexOf("_") - 1).length != 0){
+			operationText += operation.substring(operationText.lastIndexOf("_") - 1)
+			textDisplay.innerHTML = interpretOperations(operationText)
+			console.log(interpretOperations(operationText))
+			operationText = interpretOperations(operationText)
+			operation = operationText
+			console.log(operationText)
+		}
 	})
-
+	
 }
 
 drawButtons()
