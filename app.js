@@ -1,4 +1,12 @@
 //Create a javascript program to imitate a calculator
+
+window.addEventListener('keydown', function(e){
+    const key = document.querySelector(`button[data-key='${e.key}']`);
+		if(key != null){
+    	key.click();
+		}	
+});
+
 let operation = ""
 function createButton(className, id, text, parent, clickFunction){
 	let button = document.createElement("button")
@@ -9,6 +17,7 @@ function createButton(className, id, text, parent, clickFunction){
 	if(parent != undefined){
 		parent.appendChild(button)
 	}
+	button.setAttribute("data-key", id.toString())
 }
 
 function endOfString(text){	
@@ -97,12 +106,12 @@ function drawButtons(){
 			console.log(operation + " " + operationText)
 		})
 	}
-	createButton("operation-button", "clear", "CE", buttonContainer, () => {
+	createButton("operation-button", "c", "CE", buttonContainer, () => {
 		operation = "0"
 		textDisplay.innerHTML = operation
 	})
 
-	createButton("operation-button", "delete", "del", buttonContainer, () => {
+	createButton("operation-button", "Backspace", "del", buttonContainer, () => {
 		operation = operation.toString()
 		operation = operation.slice(0, operation.length - 1)
 		console.log(operation)
@@ -112,7 +121,7 @@ function drawButtons(){
 		textDisplay.innerHTML = operation
 	})
 
-	createButton("operation-button", "add", "+", buttonContainer, () => {
+	createButton("operation-button", "+", "+", buttonContainer, () => {
 		operationText = operationText.toString()
 		operation = operation.toString()
 		if(checkOperations(operation) === false){
@@ -134,7 +143,7 @@ function drawButtons(){
 		}
 	})
 
-	createButton("operation-button", "subtract", "-", buttonContainer, () => {
+	createButton("operation-button", "-", "-", buttonContainer, () => {
 		operationText = operationText.toString()
 		operation = operation.toString()
 		if(checkOperations(operation) === false){
@@ -156,7 +165,7 @@ function drawButtons(){
 		}
 	})
 	
-	createButton("operation-button", "multiply", "*", buttonContainer, () => {
+	createButton("operation-button", "*", "*", buttonContainer, () => {
 		operationText = operationText.toString()
 		operation = operation.toString()
 		if(checkOperations(operation) === false){
@@ -178,7 +187,7 @@ function drawButtons(){
 		}
 	})
 
-	createButton("operation-button", "divide", "/", buttonContainer, () => {
+	createButton("operation-button", "/", "/", buttonContainer, () => {
 		operationText = operationText.toString()
 		operation = operation.toString()
 		if(checkOperations(operation) === false){
@@ -201,7 +210,7 @@ function drawButtons(){
 		}
 	})
 
-	createButton("operation-button", "decimal", ".", buttonContainer, () => {
+	createButton("operation-button", ".", ".", buttonContainer, () => {
 		operationText = operationText.toString()
 		operation = operation.toString()
 		decimalCheck = operation.substring(operationText.lastIndexOf("_") - 1)
@@ -211,7 +220,7 @@ function drawButtons(){
 		}	
 	})
 
-	createButton("operation-button", "equals", "=", buttonContainer, () => {
+	createButton("operation-button", "=", "=", buttonContainer, () => {
 		if(checkOperations(operation) === true && operation.substring(operationText.lastIndexOf("_") - 1).length != 0){
 			operationText += operation.substring(operationText.lastIndexOf("_") - 1)
 			textDisplay.innerHTML = interpretOperations(operationText)
