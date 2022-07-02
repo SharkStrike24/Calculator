@@ -1,13 +1,22 @@
 //Create a javascript program to imitate a calculator
-
 window.addEventListener('keydown', function(e){
     const key = document.querySelector(`button[data-key='${e.key}']`);
 		if(key != null){
     	key.click();
-		}	
+		}else if(e.key === "Enter"){
+			const equals = document.getElementById("=")
+			equals.click()
+		}else if(e.key === "Delete"){
+			const del = document.getElementById("Backspace")
+			del.click()
+		}
 });
 
+const textDisplay = document.getElementById("text-display") 
+const buttonContainer = document.getElementById("button-container")
 let operation = ""
+let operationText = ""
+
 function createButton(className, id, text, parent, clickFunction){
 	let button = document.createElement("button")
 	button.classList.add(className.toString())
@@ -20,8 +29,35 @@ function createButton(className, id, text, parent, clickFunction){
 	button.setAttribute("data-key", id.toString())
 }
 
-function endOfString(text){	
-		return text.charAt(text.length - 1)
+//create a function to add an operation to the equation in order to reduce redundancy
+function addOperation(displayText, innerText, op){
+		if(checkOperations(op) === true){		
+			op = op.toString()
+			innerText = innerText.toString()
+			displayText = displayText.toString()
+			if(checkOperations(displayText) === false){
+				displayText += op
+				innerText = displayText.substring(0, displayText.length - 1)
+				innerText += "_" + op + "_"
+		  	textDisplay.innerHTML = displayText
+			}	
+			if(checkOperations(displayText) === true && displayText.substring(innerText.lastIndexOf("_") - 1).length != 0){
+				innerText += displayText.substring(innerText.lastIndexOf("_") - 1)
+				textDisplay.innerHTML = interpretOperations(innerText)
+				displayText = interpretOperations(innerText)
+				innerText = interpretOperations(innerText)
+				displayText += op
+				innerText = displayText.substring(0, displayText.length - 1)
+				innerText += "_" + op + "_"
+		  	textDisplay.innerHTML = displayText
+			}
+		}
+	operation = displayText
+	operationText = innerText
+
+	console.log("innerText: " + innerText)
+	console.log("displayText: " + displayText)
+	console.log("op: " + op)
 }
 
 function checkOperationsEndOfString(text){
@@ -39,11 +75,12 @@ function checkOperationsEndOfString(text){
 			default:
 				return false
 		}
-	}else{
-		return false
+	}else{ 
+			return false
 	}
 	
 }
+
 function checkOperations(text){
 	text = text.toString()
 	let total = 0
@@ -84,14 +121,10 @@ function interpretOperations(text){
 
 
 function drawButtons(){
-	const textDisplay = document.getElementById("text-display") 
-	const buttonContainer = document.getElementById("button-container")
-	let operationText = ""
 	console.log(buttonContainer)
 	//0 button is in an unusual place due to the nature of this for loop
 	for(let i = 0; i < 10; i++){
 		createButton("number-button", i, i, buttonContainer, () => {
-			console.log(i)
 			if(i === 0 && checkOperationsEndOfString(operation) === true){
 				operation += ""
 			}
@@ -103,7 +136,6 @@ function drawButtons(){
 			}
 			
 			textDisplay.innerHTML = operation
-			console.log(operation + " " + operationText)
 		})
 	}
 	createButton("operation-button", "c", "CE", buttonContainer, () => {
@@ -114,100 +146,10 @@ function drawButtons(){
 	createButton("operation-button", "Backspace", "del", buttonContainer, () => {
 		operation = operation.toString()
 		operation = operation.slice(0, operation.length - 1)
-		console.log(operation)
 		if (operation === ""){
 			operation = "0"	
 		}
 		textDisplay.innerHTML = operation
-	})
-
-	createButton("operation-button", "+", "+", buttonContainer, () => {
-		operationText = operationText.toString()
-		operation = operation.toString()
-		if(checkOperations(operation) === false){
-			operation += "+"
-			operationText = operation.substring(0, operation.length - 1)
-			operationText += "_+_"
-		  textDisplay.innerHTML = operation
-		}	
-		if(checkOperations(operation) === true && operation.substring(operationText.lastIndexOf("_") - 1).length != 0){
-			console.log(operationText)
-			operationText += operation.substring(operationText.lastIndexOf("_") - 1)
-			textDisplay.innerHTML = interpretOperations(operationText)
-			operation = interpretOperations(operationText)
-			operationText = interpretOperations(operationText)
-			operation += "+"
-			operationText = operation.substring(0, operation.length - 1)
-			operationText += "_+_"
-		  textDisplay.innerHTML = operation
-		}
-	})
-
-	createButton("operation-button", "-", "-", buttonContainer, () => {
-		operationText = operationText.toString()
-		operation = operation.toString()
-		if(checkOperations(operation) === false){
-			operation += "-"
-			operationText = operation.substring(0, operation.length - 1)
-			operationText += "_-_"
-		  textDisplay.innerHTML = operation
-		}	
-		if(checkOperations(operation) === true && operation.substring(operationText.lastIndexOf("_") - 1).length != 0){
-			console.log(operationText)
-			operationText += operation.substring(operationText.lastIndexOf("_") - 1)
-			textDisplay.innerHTML = interpretOperations(operationText)
-			operation = interpretOperations(operationText)
-			operationText = interpretOperations(operationText)
-			operation += "-"
-			operationText = operation.substring(0, operation.length - 1)
-			operationText += "_-_"
-		  textDisplay.innerHTML = operation
-		}
-	})
-	
-	createButton("operation-button", "*", "*", buttonContainer, () => {
-		operationText = operationText.toString()
-		operation = operation.toString()
-		if(checkOperations(operation) === false){
-			operation += "*"
-			operationText = operation.substring(0, operation.length - 1)
-			operationText += "_*_"
-		  textDisplay.innerHTML = operation
-		}	
-		if(checkOperations(operation) === true && operation.substring(operationText.lastIndexOf("_") - 1).length != 0){
-			console.log(operationText)
-			operationText += operation.substring(operationText.lastIndexOf("_") - 1)
-			textDisplay.innerHTML = interpretOperations(operationText)
-			operation = interpretOperations(operationText)
-			operationText = interpretOperations(operationText)
-			operation += "*"
-			operationText = operation.substring(0, operation.length - 1)
-			operationText += "_*_"
-		  textDisplay.innerHTML = operation
-		}
-	})
-
-	createButton("operation-button", "/", "/", buttonContainer, () => {
-		operationText = operationText.toString()
-		operation = operation.toString()
-		if(checkOperations(operation) === false){
-			operation += "/"
-			operationText = operation.substring(0, operation.length - 1)
-			operationText += "_/_"
-		  textDisplay.innerHTML = operation
-		}
-		console.log(operation.substring(operationText.lastIndexOf("_") - 1))
-		if(checkOperations(operation) === true && operation.substring(operationText.lastIndexOf("_") - 1).length != 0){
-			console.log(operationText)
-			operationText += operation.substring(operationText.lastIndexOf("_") - 1)
-			textDisplay.innerHTML = interpretOperations(operationText)
-			operation = interpretOperations(operationText)
-			operationText = interpretOperations(operationText)
-			operation += "/"
-			operationText = operation.substring(0, operation.length - 1)
-			operationText += "_/_"
-		  textDisplay.innerHTML = operation
-		}
 	})
 
 	createButton("operation-button", ".", ".", buttonContainer, () => {
@@ -221,16 +163,28 @@ function drawButtons(){
 	})
 
 	createButton("operation-button", "=", "=", buttonContainer, () => {
+		operationText = operationText.toString()
 		if(checkOperations(operation) === true && operation.substring(operationText.lastIndexOf("_") - 1).length != 0){
 			operationText += operation.substring(operationText.lastIndexOf("_") - 1)
 			textDisplay.innerHTML = interpretOperations(operationText)
 			console.log(interpretOperations(operationText))
 			operationText = interpretOperations(operationText)
-			operation = operationText
+			operation = ""
 			console.log(operationText)
 		}
 	})
+
+	createButton("operation-button", "+", "+", buttonContainer, () => {addOperation(operation, operationText, "+")
+	})
+
+	createButton("operation-button", "-", "-", buttonContainer, () => {addOperation(operation, operationText, "-")
+	})
 	
+	createButton("operation-button", "*", "*", buttonContainer, () => {addOperation(operation, operationText, "*")
+	})
+
+	createButton("operation-button", "/", "/", buttonContainer, () => {addOperation(operation, operationText, "/")
+	})	
 }
 
 drawButtons()
